@@ -5,7 +5,7 @@ export default function Logo() {
     return (
       <div style={styles.container}>
           <LogoLL className="text-white text-3xl margintop" />
-          <h1><span style={styles.if}>Lembra</span>La</h1>
+          <h1>LembraLa</h1>
       </div>
     )
   }
