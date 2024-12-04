@@ -9,9 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@internationalized/date": "^3.6.0",
-    "@nextui-org/calendar": "^2.0.12",
-    "@nextui-org/checkbox": "^2.1.5",
     "@nextui-org/react": "^2.4.8",
     "@nextui-org/system": "^2.2.6",
     "@nextui-org/theme": "^2.2.11",
