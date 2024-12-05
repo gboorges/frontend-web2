@@ -1,7 +1,7 @@
 import Header from "../components/Header"
 import Footer from "../components/Footer"
 import { CheckboxGroup, Checkbox } from "@nextui-org/react"
-import NovaAgenda from "../components/NovaAgenda"
+import NovaAgendaModal2 from "../components/NovaAgendaModal"
 
 
 export default function Home() {
@@ -18,7 +18,7 @@ export default function Home() {
               <Checkbox value="agenda3">Agenda 3</Checkbox>
               <Checkbox value="agenda4">Agenda 4</Checkbox>
             </CheckboxGroup>
-            <NovaAgenda />
+            <NovaAgendaModal2 />
           </div>
         </main>
         <Footer />
