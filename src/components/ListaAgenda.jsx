@@ -19,12 +19,12 @@ export default function ListaAgenda() {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ name: titulo, cor, descricao })
         })
 
         if (response?.ok) {
             const data = await response.json()
             console.log(data)
+            setAgendas(data)
         } else {
             const data = await response.json()
             console.log(data)
@@ -46,7 +46,7 @@ export default function ListaAgenda() {
         <div>
             <CheckboxGroup value={selectedAgendas} onChange={handleCheckboxChange} defaultValue={["agenda1", "agenda2"]}>
                 {agendas.map((agenda) => (
-                    <Checkbox key={agenda.id} value={agenda.id}>{agenda.name}</Checkbox>
+                    <Checkbox key={agenda.id} value={agenda.id}>{agenda.titulo}</Checkbox>
                 ))}
             </CheckboxGroup>
         </div>

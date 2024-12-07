@@ -4,7 +4,6 @@ import ListaTeste from "../components/ListaTeste"
 import ListaAgenda from "../components/ListaAgenda"
 import NovaAgendaModal from "../components/NovaAgendaModal"
 
-
 export default function Home() {
 
   return (
