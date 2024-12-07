@@ -5,7 +5,7 @@ import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input
 
 const cores = ["#FF5555", "#FFB254", "#F9FF51", "#7DFF63", "#54DAF8", "#5193FE", "#A963FF", "#FF6AFF", "#FF4FB0"]
 
-export default function NovaAgendaModal2() {
+export default function NovaAgendaModal() {
 
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
 
@@ -13,11 +13,25 @@ export default function NovaAgendaModal2() {
     const [descricao, setDescricao] = useState("");
     const [cor, setCor] = useState("");
 
-    const handleSave = () => {
+    const handleSave = async () => {
         console.log(titulo, descricao, cor)
 
-        // Adicionar a chamada para enviar 
-
+        const response = await fetch('http://localhost:4000/agenda/', {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({titulo, descricao, cor})
+          })
+      
+            if(response?.ok){
+              const data = await response.json()
+              console.log(data) 
+            } else {
+              const data = await response.json()
+              console.log(data) 
+              alert(data.error)
+            }
     }
 
     return (
