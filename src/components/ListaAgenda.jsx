@@ -7,6 +7,7 @@ import NovaAgendaModal from "./NovaAgendaModal"
 export default function ListaAgenda() {
   const [agendas, setAgendas] = useState([]) // Lista de agendas recebida do backend
   const [modalProps, setModalProps] = useState({ isEditing: false, agenda: null }) // Controle do modal
+  const [refresh, setRefresh] = useState(false)
 
   // Função para buscar a lista de agendas
   const handleGetAgendaList = async () => {
@@ -31,7 +32,7 @@ export default function ListaAgenda() {
 
   useEffect(() => {
     handleGetAgendaList()  // Faz a requisição ao backend quando o componente é montado
-  }, [])
+  }, [refresh])
 
   // Callback para atualizar a lista após salvar
   const atualizarListaAgendas = (novaAgenda) => {
@@ -53,7 +54,9 @@ export default function ListaAgenda() {
   // Função para lidar com ações do dropdown
   const handleAction = (key, agenda) => {
     if (key === "edit") {
-      setModalProps({ isEditing: true, agenda }) // Abre o modal em modo de edição
+      return(
+        <NovaAgendaModal isEditing={true} agenda={{ id: agenda.id, titulo: agenda.titulo, descricao: agenda.descricao, cor: agenda.cor }} onSave={handleSaveAgenda}/>
+      ) // Abre o modal em modo de edição
     } else if (key === "delete") {
       // Lógica para excluir a agenda
       handleDeleteAgenda(agenda.id)
@@ -78,6 +81,7 @@ export default function ListaAgenda() {
 
   const handleSaveAgenda = (data) => {
     console.log("Agenda salva:", data);
+    setRefresh(!refresh)
   };
 
   return (
@@ -86,14 +90,19 @@ export default function ListaAgenda() {
       {agendas.map((agenda) => (
         <Dropdown key={agenda.id}>
           <DropdownTrigger>
-            <Button variant="ghost" className="w-full">{agenda.titulo}</Button>
+            <Button variant="ghost" className="w-full text-white" >{agenda.titulo}</Button>
           </DropdownTrigger>
           <DropdownMenu
             aria-label="Ações da Agenda"
             onAction={(key) => handleAction(key, agenda)}
           >
             <DropdownItem key="view">Visualizar Eventos</DropdownItem>
-            <DropdownItem key="edit">Editar Agenda</DropdownItem>
+            <DropdownItem key="edit" onPress={()=>{
+              console.log("rodou a função")
+              return(
+                <NovaAgendaModal isEditing={true} agenda={{ id: agenda.id, titulo: agenda.titulo, descricao: agenda.descricao, cor: agenda.cor }} onSave={handleSaveAgenda}/>
+              )
+            }}>Editar Agenda</DropdownItem>
             <DropdownItem key="delete" color="danger">
               Excluir Agenda
             </DropdownItem>
