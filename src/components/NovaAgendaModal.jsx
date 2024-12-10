@@ -5,8 +5,8 @@ import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input
 
 const cores = ["#FF5555", "#FFB254", "#F9FF51", "#7DFF63", "#54DAF8", "#5193FE", "#A963FF", "#FF6AFF", "#FF4FB0"]
 
-export default function NovaAgendaModal({ isEditing, agenda, onSave }) {
-    const { isOpen, onOpen, onOpenChange } = useDisclosure()
+export default function NovaAgendaModal({isEditing, agenda, onSave }) {
+    const {isOpen, onOpen, onOpenChange } = useDisclosure()
 
     const [titulo, setTitulo] = useState("")
     const [descricao, setDescricao] = useState("")
@@ -47,11 +47,14 @@ export default function NovaAgendaModal({ isEditing, agenda, onSave }) {
                 }
             );
 
+            console.log(response)
+
             if (!response.ok) {
                 throw new Error(`Erro na API: ${response.statusText}`);
             }
 
             const data = await response.json();
+            console.log(data)
             onSave(data); // Atualiza a lista de agendas no componente pai
             onOpenChange(false); // Fecha o modal
         } catch (error) {
@@ -61,7 +64,7 @@ export default function NovaAgendaModal({ isEditing, agenda, onSave }) {
 
     return (
         <>
-            <Button onPress={onOpen}>{isEditing ? "Editar Agenda" : "Nova Agenda"}</Button>
+            
             <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
                 <ModalContent>
                     {(onClose) => (
@@ -106,7 +109,9 @@ export default function NovaAgendaModal({ isEditing, agenda, onSave }) {
                                 </RadioGroup>
                             </ModalBody>
                             <ModalFooter>
-                                <Button color="danger" variant="light" onPress={onClose}>
+                                <Button color="danger" variant="light" onPress={()=>{
+                                    onClose
+                                }}>
                                     Cancelar
                                 </Button>
                                 <Button color="primary" onPress={handleSave}>

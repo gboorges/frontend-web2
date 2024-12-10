@@ -5,9 +5,11 @@ import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@
 import NovaAgendaModal from "./NovaAgendaModal"
 
 export default function ListaAgenda() {
+  
   const [agendas, setAgendas] = useState([]) // Lista de agendas recebida do backend
   const [modalProps, setModalProps] = useState({ isEditing: false, agenda: null }) // Controle do modal
   const [refresh, setRefresh] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
 
   // Função para buscar a lista de agendas
   const handleGetAgendaList = async () => {
@@ -53,6 +55,7 @@ export default function ListaAgenda() {
 
   // Função para lidar com ações do dropdown
   const handleAction = (key, agenda) => {
+    console.log("rodou o handleAction")
     if (key === "edit") {
       return(
         <NovaAgendaModal isEditing={true} agenda={{ id: agenda.id, titulo: agenda.titulo, descricao: agenda.descricao, cor: agenda.cor }} onSave={handleSaveAgenda}/>
@@ -96,14 +99,15 @@ export default function ListaAgenda() {
             aria-label="Ações da Agenda"
             onAction={(key) => handleAction(key, agenda)}
           >
-            <DropdownItem key="view">Visualizar Eventos</DropdownItem>
-            <DropdownItem key="edit" onPress={()=>{
+            <DropdownItem key="view" className="text-slate-900">Visualizar Eventos</DropdownItem>
+            <DropdownItem key="edit" className="text-slate-900" 
+            onPress={()=>{
               console.log("rodou a função")
               return(
                 <NovaAgendaModal isEditing={true} agenda={{ id: agenda.id, titulo: agenda.titulo, descricao: agenda.descricao, cor: agenda.cor }} onSave={handleSaveAgenda}/>
               )
             }}>Editar Agenda</DropdownItem>
-            <DropdownItem key="delete" color="danger">
+            <DropdownItem key="delete" color="danger" className="text-slate-900">
               Excluir Agenda
             </DropdownItem>
           </DropdownMenu>
@@ -111,7 +115,7 @@ export default function ListaAgenda() {
       ))}
 
       {/* Modal para criação/edição */}
-      <NovaAgendaModal isEditing={false} onSave={handleSaveAgenda} />
+      <NovaAgendaModal isOpen={()=>{setIsOpen(isOpen)}}isEditing={false} onSave={handleSaveAgenda} />
       <NovaAgendaModal
         isEditing={true}
         agenda={{ id: 1, titulo: "Teste", descricao: "Testando", cor: "#FF5555" }}
