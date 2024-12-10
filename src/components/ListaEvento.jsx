@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, Input, Textarea, Radio, RadioGroup, } from "@nextui-org/react"
-import NovaAgendaModal from "./NovaAgendaModal"
+import Globais from './Globais'
 
 
 export default function ListaEvento() {
@@ -10,7 +10,6 @@ export default function ListaEvento() {
   const [agendas, setAgendas] = useState([])
   const [eventos, setEventos] = useState([]) // Lista de agendas recebida do backend
   const [modalProps, setModalProps] = useState({ isEditing: false, agenda: null }) // Controle do modal
-  const [refresh, setRefresh] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
   const [agendaId, setAgendaId] = useState("")
@@ -46,7 +45,7 @@ export default function ListaEvento() {
   useEffect(() => {
     handleGetEventoList()  // Faz a requisição ao backend quando o componente é montado
     handleGetAgendaList()
-  }, [refresh])
+  }, [Globais.refresh])
 
   const handleGetAgendaList = async () => {
     let response = null
@@ -116,7 +115,7 @@ export default function ListaEvento() {
 
   const handleSaveEvento = (data) => {
     console.log("evento salvo:", data);
-    setRefresh(!refresh)
+    Globais.refresh = !Globais.refresh
   };
 
   const handleSave = async () => {
@@ -124,9 +123,9 @@ export default function ListaEvento() {
       agendaId: parseInt(agendaId),
       titulo,
       descricao,
-      dataInicio:`${dataInicio}:00.000Z`,
-      dataFim:`${dataFim}:00.000Z`,
-    };  
+      dataInicio: `${dataInicio}:00.000Z`,
+      dataFim: `${dataFim}:00.000Z`,
+    };
     console.log(payload)
     try {
       const response = await fetch(
@@ -157,14 +156,20 @@ export default function ListaEvento() {
   function fechaTudo() {
     setId(0)
     setAgendaId(null)
-    tituloAgenda("")
+    setTituloAgenda("")
     setTitulo()
     setDescricao()
     setDataFim()
     setDataInicio()
     setIsEditing(false)
     setIsOpen(false)
-    setRefresh(!refresh)
+    Globais.refresh = !Globais.refresh
+  }
+
+  function inserirTituloAgenda(id, titulo) {
+    if (agendaId == id) {
+      setTituloAgenda(titulo)
+    }
   }
 
   return (
@@ -180,12 +185,12 @@ export default function ListaEvento() {
             onAction={(key) => handleAction(key, evento)}
           >
             <DropdownItem key="edit" className="text-slate-900"
-              onPress={ () => {
+              onPress={() => {
                 setAgendaId(evento.agendaId)
                 setTitulo(evento.titulo)
                 setDescricao(evento.descricao)
-                setDataInicio(evento.dataInicio.substring(0,16))
-                setDataFim(evento.dataFim.substring(0,16))
+                setDataInicio(evento.dataInicio.substring(0, 16))
+                setDataFim(evento.dataFim.substring(0, 16))
                 setId(evento.id)
               }}>Editar Evento</DropdownItem>
             <DropdownItem key="delete" color="danger" className="text-slate-900">
@@ -218,16 +223,17 @@ export default function ListaEvento() {
                 />
                 <Dropdown key={agendas.id}>
                   <DropdownTrigger>
-                    <Button variant="ghost" className="w-full text-black" >{agendaId == null? 'Escolha a agenda':tituloAgenda}</Button>
+                    <Button variant="ghost" className="w-full text-black" >{agendaId == null ? 'Escolha a agenda' : tituloAgenda}</Button>
                   </DropdownTrigger>
                   <DropdownMenu>
-                    {agendas.map((agenda, index)=>{
-                      return(
-                        <DropdownItem onPress={()=>{
+                    {agendas.map((agenda, index) => {
+                      inserirTituloAgenda(agenda.id, agenda.titulo)
+                      return (
+                        <DropdownItem onPress={() => {
                           setAgendaId(agenda.id)
                           setTituloAgenda(agenda.titulo)
                         }} className="text-slate-900"
-                        key={index}>{agenda.titulo}</DropdownItem>
+                          key={index}>{agenda.titulo}</DropdownItem>
                       )
                     })}
                   </DropdownMenu>
