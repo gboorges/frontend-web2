@@ -1,7 +1,5 @@
 import Header from "../components/Header"
 import Footer from "../components/Footer"
-import ListaAgenda from "../components/ListaAgenda"
-import NovaAgendaModal from "../components/NovaAgendaModal"
 import ListaGeral from "@/components/ListaGeral"
 import ListaEvento from "@/components/ListaEvento"
 

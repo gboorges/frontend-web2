@@ -4,7 +4,6 @@ import { useState, useEffect } from "react"
 import {  Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, Input, Textarea, Radio, RadioGroup, } from "@nextui-org/react"
 import NovaAgendaModal from "./NovaAgendaModal"
 
-
 export default function ListaGeral() {
     const cores = ["#FF5555", "#FFB254", "#F9FF51", "#7DFF63", "#54DAF8", "#5193FE", "#A963FF", "#FF6AFF", "#FF4FB0"]
   const [agendas, setAgendas] = useState([]) // Lista de agendas recebida do backend
@@ -85,7 +84,7 @@ export default function ListaGeral() {
       // Atualiza a lista removendo a agenda excluída
       setAgendas((prevAgendas) => prevAgendas.filter((agenda) => agenda.id !== id))
     } catch (error) {
-      console.error("Erro ao excluir a agenda:", error)
+      alert("Erro ao excluir a agenda: a agenda possui eventos vinculados")
     }
   }
 
@@ -152,7 +151,6 @@ function fechaTudo(){
             aria-label="Ações da Agenda"
             onAction={(key) => handleAction(key, agenda)}
           >
-            <DropdownItem key="view" className="text-slate-900">Visualizar Eventos</DropdownItem>
             <DropdownItem key="edit" className="text-slate-900" 
             onPress={()=>{
               console.log("rodou a função")

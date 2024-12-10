@@ -7,12 +7,14 @@ import NovaAgendaModal from "./NovaAgendaModal"
 
 export default function ListaEvento() {
   const cores = ["#FF5555", "#FFB254", "#F9FF51", "#7DFF63", "#54DAF8", "#5193FE", "#A963FF", "#FF6AFF", "#FF4FB0"]
+  const [agendas, setAgendas] = useState([])
   const [eventos, setEventos] = useState([]) // Lista de agendas recebida do backend
   const [modalProps, setModalProps] = useState({ isEditing: false, agenda: null }) // Controle do modal
   const [refresh, setRefresh] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
   const [agendaId, setAgendaId] = useState("")
+  const [tituloAgenda, setTituloAgenda] = useState("")
   const [titulo, setTitulo] = useState("")
   const [descricao, setDescricao] = useState("")
   const [dataInicio, setDataInicio] = useState("")
@@ -43,8 +45,28 @@ export default function ListaEvento() {
 
   useEffect(() => {
     handleGetEventoList()  // Faz a requisição ao backend quando o componente é montado
+    handleGetAgendaList()
   }, [refresh])
 
+  const handleGetAgendaList = async () => {
+    let response = null
+    await fetch('http://localhost:4000/agenda/list', {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then((req) => {
+      response = req
+    }).catch((error) => {
+      console.log(error)
+    })
+
+    if (response?.ok) {
+      const data = await response.json()
+      console.log(data)
+      setAgendas(data)
+    }
+  }
   // Callback para atualizar a lista após salvar
   const atualizarListaEventos = (novoEvento) => {
     if (modalProps.isEditing) {
@@ -105,7 +127,7 @@ export default function ListaEvento() {
       dataInicio:`${dataInicio}:00.000Z`,
       dataFim:`${dataFim}:00.000Z`,
     };  
-
+    console.log(payload)
     try {
       const response = await fetch(
         isEditing
@@ -134,9 +156,12 @@ export default function ListaEvento() {
 
   function fechaTudo() {
     setId(0)
-    setAgendaId()
+    setAgendaId(null)
+    tituloAgenda("")
     setTitulo()
     setDescricao()
+    setDataFim()
+    setDataInicio()
     setIsEditing(false)
     setIsOpen(false)
     setRefresh(!refresh)
@@ -155,12 +180,12 @@ export default function ListaEvento() {
             onAction={(key) => handleAction(key, evento)}
           >
             <DropdownItem key="edit" className="text-slate-900"
-              onPress={() => {
+              onPress={ () => {
                 setAgendaId(evento.agendaId)
                 setTitulo(evento.titulo)
                 setDescricao(evento.descricao)
-                setDataInicio(evento.dataInicio)
-                setDataFim(evento.dataFim)
+                setDataInicio(evento.dataInicio.substring(0,16))
+                setDataFim(evento.dataFim.substring(0,16))
                 setId(evento.id)
               }}>Editar Evento</DropdownItem>
             <DropdownItem key="delete" color="danger" className="text-slate-900">
@@ -171,7 +196,7 @@ export default function ListaEvento() {
       ))}
       <Button onPress={() => { setIsOpen(true) }} >{isEditing ? "Editar Evento" : "Novo Evento"}</Button>
       {/* Modal para criação/edição */}
-      <Modal isOpen={isOpen} onClose={() => { fechaTudo }}>
+      <Modal isOpen={isOpen} onClose={() => { fechaTudo() }}>
         <ModalContent>
           {() => (
             <>
@@ -191,22 +216,22 @@ export default function ListaEvento() {
                   value={descricao}
                   onChange={(e) => setDescricao(e.target.value)}
                 />
-                <input
-                  type="number"
-                  label="Descrição"
-                  placeholder="qual agenda voce quer relacionar esse evento?"
-                  value={agendaId}
-                  onChange={(e) => setAgendaId(e.target.value)}
-                  min="0" // Valor mínimo permitido
-                  step="1" // Incremento de 1
-                  style={{
-                    color: 'black', // Cor do texto
-                    backgroundColor: 'white', // Cor de fundo para melhor contraste
-                    padding: '8px', // Preenchimento interno do campo
-                    borderRadius: '4px', // Bordas arredondadas
-                    border: '1px solid #ccc', // Borda sutil
-                  }}
-                />
+                <Dropdown key={agendas.id}>
+                  <DropdownTrigger>
+                    <Button variant="ghost" className="w-full text-black" >{agendaId == null? 'Escolha a agenda':tituloAgenda}</Button>
+                  </DropdownTrigger>
+                  <DropdownMenu>
+                    {agendas.map((agenda, index)=>{
+                      return(
+                        <DropdownItem onPress={()=>{
+                          setAgendaId(agenda.id)
+                          setTituloAgenda(agenda.titulo)
+                        }} className="text-slate-900"
+                        key={index}>{agenda.titulo}</DropdownItem>
+                      )
+                    })}
+                  </DropdownMenu>
+                </Dropdown>
                 <Input
                   type="datetime-local"
                   label="Data de Início"
@@ -222,27 +247,6 @@ export default function ListaEvento() {
                   onChange={(e) => setDataFim(e.target.value)}
                 />
 
-                {/* <RadioGroup label="Cor da Agenda" orientation="horizontal" value={cor} onValueChange={setCor}>
-                            {cores.map((cor, index) => (
-                                <div key={index} className="flex-row"> 
-                                <Radio
-                                    
-                                    value={cor}
-                                    color="default"
-                                    className="w-8 h-8 p-0 m-1"
-                                >
-                                </Radio>
-                                <div
-                                    style={{
-                                        backgroundColor: cor,
-                                        width: "50px",
-                                        height: "50px",
-                                        //borderRadius: "",
-                                    }}
-                                />
-                                </div>
-                            ))}
-                        </RadioGroup> */}
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={() => {
