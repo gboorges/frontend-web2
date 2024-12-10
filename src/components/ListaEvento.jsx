@@ -16,7 +16,7 @@ export default function ListaEvento() {
   const [titulo, setTitulo] = useState("")
   const [descricao, setDescricao] = useState("")
   const [dataInicio, setDataInicio] = useState("")
-  const [dataFim, setDataFim] = useState(0)
+  const [dataFim, setDataFim] = useState()
   const [id, setId] = useState(0)
 
 
@@ -99,18 +99,18 @@ export default function ListaEvento() {
 
   const handleSave = async () => {
     const payload = {
-      agendaId,
+      agendaId: parseInt(agendaId),
       titulo,
       descricao,
-      dataInicio,
-      dataFim,
-    };
+      dataInicio:`${dataInicio}:00.000Z`,
+      dataFim:`${dataFim}:00.000Z`,
+    };  
 
     try {
       const response = await fetch(
         isEditing
-          ? `http://localhost:4000/evento/${id}` // Atualizar agenda
-          : "http://localhost:4000/evento/", // Criar nova agenda
+          ? `http://localhost:4000/evento/${id}` // Atualizar evento
+          : "http://localhost:4000/evento/", // Criar novo evento
         {
           method: isEditing ? "PUT" : "POST",
           headers: {
@@ -119,9 +119,6 @@ export default function ListaEvento() {
           body: JSON.stringify(payload),
         }
       );
-
-      console.log(response)
-
       if (!response.ok) {
         throw new Error(`Erro na API: ${response.statusText}`);
       }
@@ -130,7 +127,7 @@ export default function ListaEvento() {
       console.log(data)
       // Fecha o modal
     } catch (error) {
-      console.error("Erro ao salvar agenda:", error);
+      console.error("Erro ao salvar evento:", error);
     }
     fechaTudo()
   }
@@ -144,6 +141,7 @@ export default function ListaEvento() {
     setIsOpen(false)
     setRefresh(!refresh)
   }
+
   return (
     <>
       {/* Renderiza a lista de agendas */}
