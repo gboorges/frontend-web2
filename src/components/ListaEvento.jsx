@@ -161,6 +161,7 @@ export default function ListaEvento() {
                 setDescricao(evento.descricao)
                 setDataInicio(evento.dataInicio)
                 setDataFim(evento.dataFim)
+                setId(evento.id)
               }}>Editar Evento</DropdownItem>
             <DropdownItem key="delete" color="danger" className="text-slate-900">
               Excluir Evento
