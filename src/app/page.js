@@ -3,6 +3,7 @@ import Footer from "../components/Footer"
 import ListaAgenda from "../components/ListaAgenda"
 import NovaAgendaModal from "../components/NovaAgendaModal"
 import ListaGeral from "@/components/ListaGeral"
+import ListaEvento from "@/components/ListaEvento"
 
 export default function Home() {
 
@@ -16,7 +17,8 @@ export default function Home() {
             <h1 className="text-3xl">Agendas</h1>
             <ListaGeral />
           </div>
-          <div className="flex bg-red-600 h-screen w-3/4">
+          <div className="flex bg-red-600 h-screen w-3/4" style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', flexDirection: 'column', marginTop: '30px' }}>
+          <ListaEvento />
           </div>
           </div>
         </main>
